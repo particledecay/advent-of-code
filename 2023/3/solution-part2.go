@@ -167,11 +167,12 @@ func main() {
 
 	// iterate through the grid to look for gears
 	for i, row := range grid {
-		gear := &Gear{}
 		for j, col := range row {
 			if col == '*' {
-				gear.x = j
-				gear.y = i
+				gear := &Gear{
+					x: j,
+					y: i,
+				}
 				gears = append(gears, gear)
 			}
 		}
