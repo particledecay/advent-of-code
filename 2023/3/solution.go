@@ -148,10 +148,7 @@ func main() {
 				if len(number.number) > 0 {
 					valid := checkAroundNumber(number)
 					if valid {
-						// fmt.Printf("VALID: %s\n", string(number.number))
 						totalPartNumbers += number.Value()
-						// } else {
-						// fmt.Printf("%s is not valid\n", string(number.number))
 					}
 				}
 				number = &Number{}
@@ -164,6 +161,14 @@ func main() {
 						inNumber = true
 					}
 					number.number = append(number.number, col)
+				}
+				// check we're not at the end of the row
+				if j == len(row)-1 {
+					number.endIdx = j
+					valid := checkAroundNumber(number)
+					if valid {
+						totalPartNumbers += number.Value()
+					}
 				}
 			}
 		}
