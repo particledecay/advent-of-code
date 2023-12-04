@@ -150,8 +150,8 @@ func main() {
 					if valid {
 						// fmt.Printf("VALID: %s\n", string(number.number))
 						totalPartNumbers += number.Value()
-					} else {
-						fmt.Printf("%s is not valid\n", string(number.number))
+						// } else {
+						// fmt.Printf("%s is not valid\n", string(number.number))
 					}
 				}
 				number = &Number{}
