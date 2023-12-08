@@ -1,0 +1,119 @@
+#!/bin/bash
+###############################################################################
+#                                                                             #
+#   Name:        Joey Espinosa                                                #
+#   Usage:       ./aoc-fetcher [day] [year]                                   #
+#   Description: Fetches the input and puzzle markdown for the given day and  #
+#                year. Creates the directory structure if it doesn't exist.   #
+#                                                                             #
+#                If no arguments are given, it will default to today's date.  #
+#                If no year is given, it will default to the current year.    #
+#                                                                             #
+###############################################################################
+
+# CHANGE THESE
+PROJECT_DIR=${PROJECT_HOME:-~/projects}/advent-of-code
+LANGUAGE=go
+
+# fail if the aoc command doesn't exist
+if ! command -v aoc &> /dev/null; then
+    echo "make sure aoc-cli is installed and 'aoc' is in your PATH: https://github.com/scarvalhojr/aoc-cli"
+    exit 1
+fi
+
+YEAR=
+DAY=
+if [ $# -eq 0 ]; then
+    DAY=$(date +%-d)
+    YEAR=$(date +%Y)
+  elif [ $# -eq 1 ]; then
+    DAY=$1
+    YEAR=$(date +%Y)
+  elif [ $# -eq 2 ]; then
+    DAY=$1
+    YEAR=$2
+  else
+    echo "Usage: $0 [day] [year]"
+    exit 1
+fi
+
+puzzle_dir="$PROJECT_DIR/$YEAR/$DAY"
+if [ ! -d "$puzzle_dir" ]; then
+    mkdir -p "$puzzle_dir"
+fi
+
+if aoc d -y "$YEAR" -d "$DAY" -i "$puzzle_dir/input.txt" -p "$puzzle_dir/puzzle.md" --overwrite; then
+  case "$LANGUAGE" in
+    go)
+      part1="$puzzle_dir/part1.go"
+      if [ -f "$part1" ]; then
+        cp "$part1" "$puzzle_dir/part2.go"
+      else
+        cat > "$part1" <<EOF
+package main
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+)
+
+func main() {
+	if len(os.Args) < 2 {
+		fmt.Println("Usage: \$0 <input-file>")
+		os.Exit(1)
+	}
+
+	// read file from arg
+	buf, err := os.Open(os.Args[1])
+	if err != nil {
+		panic(err)
+	}
+  defer buf.Close()
+
+	scanner := bufio.NewScanner(buf)
+	for scanner.Scan() {
+		line := scanner.Text()
+		if len(line) == 0 {
+			continue
+		}
+
+    // START HERE
+	}
+}
+EOF
+      fi
+      ;;
+    python)
+      part1="$puzzle_dir/part1.py"
+      if [ -f "$part1" ]; then
+        cp "$part1" "$puzzle_dir/part2.py"
+      else
+        cat > "$part1" <<EOF
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+import sys
+
+
+if __name__ == "__main__":
+    if len(sys.argv) < 2:
+        print("Usage: \$0 <input-file>")
+        sys.exit(1)
+
+    with open(sys.argv[1]) as f:
+        for line in f:
+            line = line.strip()
+            if len(line) == 0:
+                continue
+
+            # START HERE
+EOF
+        chmod +x "$part1"
+      fi
+      ;;
+    *)
+      echo "Unsupported language: $LANGUAGE"
+      exit 1
+      ;;
+  esac
+fi
