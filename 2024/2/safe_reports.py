@@ -42,6 +42,18 @@ def get_report_safety(report):
     return True
 
 
+def get_report_safety_with_tolerance(report):
+    if get_report_safety(report):
+        return True
+
+    # try removing each number and see if it's safe
+    for i in range(len(report)):
+        if get_report_safety(report[:i] + report[i + 1:]):
+            return True
+
+    return False
+
+
 if __name__ == "__main__":
     import os
     import sys
@@ -59,5 +71,10 @@ if __name__ == "__main__":
 
     reports = parse_reports(lines)
 
-    safe_reports = sum([1 for report in reports if get_report_safety(report)])
-    print(f"Safe reports: {safe_reports}")
+    safe_reports_part1 = sum(
+        [1 for report in reports if get_report_safety(report)])
+    print(f"Safe reports: {safe_reports_part1}")
+
+    safe_reports_part2 = sum(
+        [1 for report in reports if get_report_safety_with_tolerance(report)])
+    print(f"Safe reports with tolerance: {safe_reports_part2}")
