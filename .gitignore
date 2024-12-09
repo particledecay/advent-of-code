@@ -2,3 +2,4 @@ puzzle.md
 *.txt
 __pycache__/
 *.pyc
+.vscode/
